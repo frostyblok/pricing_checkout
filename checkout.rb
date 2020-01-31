@@ -5,6 +5,9 @@ class Checkout
   T_SHIRT = 'TSHIRT'
   MUG = 'MUG'
 
+  TWO_FOR_ONE_THRESHOLD = 2
+  CFO_THRESHOLD = 3
+
   PRICING_RULE_JSON = JSON.load(File.open "./pricing_rules.json")
 
   def initialize
@@ -29,7 +32,7 @@ class Checkout
     @number_of_vouchers = discount(VOUCHER)
     return pricing_rules[VOUCHER] * @number_of_vouchers unless two_for_one_promo?
 
-    (pricing_rules[VOUCHER] * @number_of_vouchers) - pricing_rules[VOUCHER]
+    (pricing_rules[VOUCHER] * number_of_discount_vouchers)
   end
 
   def total_amount_of_t_shirts
@@ -45,12 +48,16 @@ class Checkout
     pricing_rules[MUG] * number_of_mugs
   end
 
+  def number_of_discount_vouchers
+    (@number_of_vouchers / TWO_FOR_ONE_THRESHOLD) + (@number_of_vouchers % TWO_FOR_ONE_THRESHOLD)
+  end
+
   def two_for_one_promo?
-    @number_of_vouchers >= 2
+    @number_of_vouchers >= TWO_FOR_ONE_THRESHOLD
   end
 
   def cfo_discount?
-    @number_of_t_shirts >= 3
+    @number_of_t_shirts >= CFO_THRESHOLD
   end
 
   def discount(code)
