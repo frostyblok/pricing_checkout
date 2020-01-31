@@ -80,5 +80,19 @@ describe Checkout do
         expect(client.total).to eq(74.50)
       end
     end
+
+    context 'fifth example' do
+      before do
+        client.scan(voucher)
+        client.scan(voucher)
+        client.scan(voucher)
+        client.scan(voucher)
+        client.scan(voucher)
+      end
+
+      it 'returns total amount of items in checkout' do
+        expect(client.total).to eq(15.00)
+      end
+    end
   end
 end
