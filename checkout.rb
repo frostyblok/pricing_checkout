@@ -29,21 +29,21 @@ class Checkout
   attr_reader :pricing_rules, :total_items
 
   def total_amount_of_vouchers
-    @number_of_vouchers = discount(VOUCHER)
+    @number_of_vouchers = total_number_of_item_in_cart(VOUCHER)
     return pricing_rules[VOUCHER] * @number_of_vouchers unless two_for_one_promo?
 
     (pricing_rules[VOUCHER] * number_of_discount_vouchers)
   end
 
   def total_amount_of_t_shirts
-    @number_of_t_shirts = discount(T_SHIRT)
+    @number_of_t_shirts = total_number_of_item_in_cart(T_SHIRT)
     return pricing_rules[T_SHIRT] * @number_of_t_shirts unless cfo_discount?
 
     (pricing_rules[T_SHIRT] * @number_of_t_shirts) - @number_of_t_shirts
   end
 
   def total_amount_of_mugs
-    number_of_mugs = discount(MUG)
+    number_of_mugs = total_number_of_item_in_cart(MUG)
 
     pricing_rules[MUG] * number_of_mugs
   end
@@ -60,9 +60,9 @@ class Checkout
     @number_of_t_shirts >= CFO_THRESHOLD
   end
 
-  def discount(code)
+  def total_number_of_item_in_cart(item_code)
     total_items.map do |item_hash|
       item_hash.map { |item, _| item }
-    end.flatten.count(code)
+    end.flatten.count(item_code)
   end
 end
